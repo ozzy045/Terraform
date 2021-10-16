@@ -42,3 +42,7 @@ variable "backend_address_pool_id" {
     type = string
     description = "backend address pool id"
 }
+
+variable "vm_count" {
+   type = number
+}

@@ -17,3 +17,6 @@ variable "admin_password" {
   type = string
   description = "VM password"
 }
+variable "vm_count" {
+   default = 2
+}

@@ -1,6 +1,7 @@
 # Create network interface
 resource "azurerm_network_interface" "nic_vm" {
-    name                      = var.nic_name
+    count                     = var.vm_count
+    name                      = "${var.nic_name}-${count.index}"
     location                  = var.location
     resource_group_name       = var.resource_group_name
 
@@ -13,17 +14,18 @@ resource "azurerm_network_interface" "nic_vm" {
 
 # Create virtual machines
 resource "azurerm_linux_virtual_machine" "vm" {
-    name                  = var.VM_name
+    count                 = var.vm_count
+    name                  = "${var.VM_name}-${count.index}"
     resource_group_name   = var.resource_group_name
     location              = var.location
     size                  = var.vm_size
 
     network_interface_ids = [ 
-         azurerm_network_interface.nic_vm.id,
+         azurerm_network_interface.nic_vm[count.index].id,
     ]
 
     os_disk {
-        name              = "myOsDisk"
+        name              = "myOsDisk-${count.index}"
         caching           = "ReadWrite"
         storage_account_type = "Premium_LRS"
     }
@@ -45,7 +47,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "vm-nic-assoc" {
-  network_interface_id    = azurerm_network_interface.nic_vm.id
+  count                   = var.vm_count  
+  network_interface_id    = azurerm_network_interface.nic_vm[count.index].id
   ip_configuration_name   = "internal-vm"
   backend_address_pool_id = var.backend_address_pool_id
 }
