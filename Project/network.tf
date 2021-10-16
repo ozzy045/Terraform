@@ -32,7 +32,7 @@ resource "azurerm_network_security_group" "public_nsg" {
         name                       = "SSH"
         priority                   = 100
         direction                  = "Inbound"
-        access                     = "Allow"
+        access                     = "deny"
         protocol                   = "Tcp"
         source_port_range          = "*"
         destination_port_range     = "22"
@@ -73,9 +73,21 @@ resource "azurerm_network_security_group" "private_nsg" {
   resource_group_name = azurerm_resource_group.rg.name
 
   security_rule {
-    name                       = "Rule-5432"
+    name                       = "inbound-5432"
     priority                   = 110
     direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "5432"
+    destination_port_range     = "5432"
+    source_address_prefix      = "11.0.1.0/24"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "outbound-5432"
+    priority                   = 110
+    direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "5432"
@@ -88,7 +100,7 @@ resource "azurerm_network_security_group" "private_nsg" {
     name                       = "Rule-22"
     priority                   = 100
     direction                  = "Inbound"
-    access                     = "Allow"
+    access                     = "deny"
     protocol                   = "*"
     source_port_range          = "22"
     destination_port_range     = "22"
