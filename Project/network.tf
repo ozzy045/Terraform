@@ -113,3 +113,33 @@ resource "azurerm_subnet_network_security_group_association" "private_nsg_assoc"
     subnet_id      = azurerm_subnet.privatesubnet.id
     network_security_group_id = azurerm_network_security_group.private_nsg.id
 }
+
+resource "azurerm_public_ip" "nat_ip" {
+  name                = "nat-public-ip"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+resource "azurerm_nat_gateway" "nat_gateway" {
+  name                    = "nat-Gateway"
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  sku_name                = "Standard"
+  idle_timeout_in_minutes = 10
+  
+}
+
+resource "azurerm_nat_gateway_public_ip_association" "nat_ip_assoc" {
+  nat_gateway_id       = azurerm_nat_gateway.nat_gateway.id
+  public_ip_address_id = azurerm_public_ip.nat_ip.id
+}
+
+resource "azurerm_subnet_nat_gateway_association" "assoc_private_nat" {
+  subnet_id      = azurerm_subnet.privatesubnet.id
+  nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
+}
+resource "azurerm_subnet_nat_gateway_association" "assoc_public_nat" {
+  subnet_id      = azurerm_subnet.publicsubnet.id
+  nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
+}
