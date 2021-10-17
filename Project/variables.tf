@@ -20,3 +20,12 @@ variable "admin_password" {
 variable "vm_count" {
    default = 2
 }
+  variable "administrator_login" {
+    type = string
+    description = "postgres user name"
+}        
+
+  variable "administrator_login_password" {
+    type = string
+    description = "postgres users password"
+  }
