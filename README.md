@@ -18,3 +18,7 @@
 * Run "Terraform Init"
 * Run "Terraform Plan" - take a look what will be provisioned.
 * Run Terraform apply.
+
+**This is how the Topology will look like:**
+
+![Topology](https://bootcamp.rhinops.io/images/week-4-project-env.png)
